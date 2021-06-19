@@ -69,7 +69,7 @@ Usage:  `./install.sh [OPTIONS...]`
 
 -s, --size [default|220|240|260|280] # Set Nautilus sidebar minimum width. Default is 200px
 
--i, --icon [standard|simple|gnome|ubuntu|arch|manjaro|fedora|debian|void] # Set 'Activities' icon. Default is 'standard'
+-i, --icon [standard|simple|gnome|ubuntu|arch|manjaro|fedora|debian|void|popos] # Set 'Activities' icon. Default is 'standard'
 
 -b, --background [default|blank|IMAGE_PATH] # Set gnome-shell background image. Default is BigSur-like wallpaper
 
@@ -189,7 +189,7 @@ Usage:  `./tweaks.sh [OPTIONS...]`
 -p, --panel [default|30|45|60|75]
 # Set 'WhiteSur' GDM (GNOME Shell) theme panel transparency. Default is 15%
 
--i, --icon [standard|simple|gnome|ubuntu|arch|manjaro|fedora|debian|void]
+-i, --icon [standard|simple|gnome|ubuntu|arch|manjaro|fedora|debian|void|popos]
 # Set 'WhiteSur' GDM (GNOME Shell) 'Activities' icon. Default is 'standard'
 
 -r, --remove, --revert
