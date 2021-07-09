@@ -3,8 +3,8 @@
 
 #panel {
   background-color: $panel_bg;
-  font-weight: if($laptop == 'true', normal, bold);
-  height: $menuitem_size;
+  font-weight: normal;
+  height: $menuitem_size - 4px;
   box-shadow: 0 5px 16px rgba(black, 0.35);
   color: $panel_fg;
   font-feature-settings: "tnum";
@@ -55,7 +55,7 @@
   .panel-button {
     -natural-hpadding: 8px;
     -minimum-hpadding: 8px;
-    font-weight: if($laptop == 'true', normal, bold);
+    font-weight: normal;
     color: $panel_fg;
     transition-duration: 150ms;
     border-radius: $bt_radius;
@@ -134,6 +134,10 @@
     .panel-status-menu-box .system-status-icon { margin: 0 0; }
     .panel-status-menu-box StLabel { padding: 0 0 0 $base_padding / 2; }
 
+    .appindicator-trayicons-box { margin: 0 $base_padding; }
+
+    // .appindicator-box { margin: 0 0; }
+
     // app menu icon
     .app-menu-icon {
       -st-icon-style: symbolic;
@@ -150,6 +154,12 @@
     .system-status-icon {
       margin: 0 0 !important;
     }
+  }
+
+  Gjs_ui_panel_AppMenuButton.panel-button,
+  .menubar-button, // For Fildem global menu
+  .desktop-name-label { // For Unite
+    font-weight: bold !important;
   }
 
   &.unlock-screen,

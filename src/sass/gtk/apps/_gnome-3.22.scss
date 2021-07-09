@@ -111,7 +111,6 @@ $nautilus_sidebar_image: image($dark_sidebar_bg);
     > headerbar.titlebar,
     > deck > box.vertical > headerbar.titlebar {
       background-color: transparent;
-      box-shadow: inset 0 1px rgba(white, 0.1);
       background-image: $nautilus_header_image;
       border: none;
       background-clip: padding-box;
@@ -362,32 +361,32 @@ $nautilus_sidebar_image: image($dark_sidebar_bg);
     > stack:not(:only-child) {
       searchbar > revealer > box { background-color: transparent; }
     }
+  }
 
-    infobar {
-      & > revealer > box,
-      &:hover > revealer > box,
-      &:backdrop > revealer > box {
-        background-color: transparent;
-        padding: 0 $container_padding * 2;
+  &.background infobar {
+    & > revealer > box,
+    &:hover > revealer > box,
+    &:backdrop > revealer > box {
+      background-color: transparent;
+      padding: 0 $container_padding * 2;
+      color: $selection_mode_bg;
+
+      button {
         color: $selection_mode_bg;
+        background-color: rgba($selection_mode_bg, 0.15);
+        border: none;
 
-        button {
-          color: $selection_mode_bg;
-          background-color: rgba($selection_mode_bg, 0.15);
-          border: none;
+        &:hover { background-color: rgba($selection_mode_bg, 0.25); }
+        &:active, &:checked { background-color: $selection_mode_bg; color: white; }
+        &:disabled {
+          background-color: rgba($selection_mode_bg, 0.05);
+          color: rgba($selection_mode_bg, 0.35);
 
-          &:hover { background-color: rgba($selection_mode_bg, 0.25); }
-          &:active, &:checked { background-color: $selection_mode_bg; color: white; }
-          &:disabled {
-            background-color: rgba($selection_mode_bg, 0.05);
-            color: rgba($selection_mode_bg, 0.35);
-
-            label { color: rgba($selection_mode_bg, 0.35); }
-          }
+          label { color: rgba($selection_mode_bg, 0.35); }
         }
-
-        *:link, link { color: $link_color; }
       }
+
+      *:link, link { color: $link_color; }
     }
   }
 
@@ -417,21 +416,17 @@ $nautilus_sidebar_image: image($dark_sidebar_bg);
     &.background.csd {
       border-radius: $maximized_radius_style;
 
-      &.unified { border-radius: $maximized_radius; }
+      notebook { &, > stack { border-radius: 0 0 $maximized_radius $maximized_radius; } }
 
-      &, &.unified {
-        notebook { &, > stack { border-radius: 0 0 $maximized_radius $maximized_radius; } }
-
-        > headerbar.titlebar,
-        > deck > box.vertical > headerbar.titlebar {
-          &, &.windowhandle {
-            border-top-left-radius: $maximized_radius;
-            border-top-right-radius: $maximized_radius;
-          }
+      > headerbar.titlebar,
+      > deck > box.vertical > headerbar.titlebar {
+        &, &.windowhandle {
+          border-top-left-radius: $maximized_radius;
+          border-top-right-radius: $maximized_radius;
         }
-
-        placessidebar { border-bottom-left-radius: $maximized_radius; }
       }
+
+      placessidebar { border-bottom-left-radius: $maximized_radius; }
     }
   }
 
@@ -708,7 +703,6 @@ window.org-gnome-gedit {
   }
 
   .gedit-document-panel { // 'documents' pane
-
     row.activatable { padding: 6px 0; }
 
     row button { // 'close' button
@@ -1336,51 +1330,54 @@ button.documents-favorite:active:hover {
 //
 // Gnome Tweak Tool ( Gnome tweaks )
 //
+window.background.csd {
+  > hdyleaflet,
+  > leaflet,
+  > box.horizontal > stack.background {
+    frame > border { border: none; }
 
-hdyleaflet, leaflet, box.horizontal > stack.background {
-  frame > border { border: none; }
+    frame:not(.view) list:not(.contacts-contact-list) { // Don't set this to Gnome-Contacts
+      @extend %circular_list;
 
-  frame:not(.view) list:not(.contacts-contact-list) { // Don't set this to Gnome-Contacts
-    @extend %circular_list;
+      row.activatable {
+        @extend %circular_row;
 
-    row.activatable {
-      @extend %circular_row;
-
-      .row-header > button:not(.text-button) {
-        min-height: 28px;
-        min-width: 28px;
-        padding: 0;
-        margin: 4px 0;
+        .row-header > button:not(.text-button) {
+          min-height: 28px;
+          min-width: 28px;
+          padding: 0;
+          margin: 4px 0;
+        }
       }
     }
-  }
 
-  frame.view {
-    @extend %circular_list;
+    frame.view {
+      @extend %circular_list;
 
-    list {
-      background: none;
-
-      > separator {
+      list {
         background: none;
-        min-height: 0;
+
+        > separator {
+          background: none;
+          min-height: 0;
+        }
+
+        row.activatable { @extend %circular_row; }
       }
+    }
+
+    list.view, list.frame {
+      @extend %circular_list;
 
       row.activatable { @extend %circular_row; }
     }
-  }
 
-  list.view, list.frame {
-    @extend %circular_list;
-
-    row.activatable { @extend %circular_row; }
-  }
-
-  > box.vertical > scrolledwindow > viewport.frame {
-    &,
-    > stack,
-    > stack > box.vertical {
-      > list > row.activatable { @extend %sidebar_row; }
+    > box.vertical > scrolledwindow > viewport.frame {
+      &,
+      > stack,
+      > stack > box.vertical {
+        > list > row.activatable { @extend %sidebar_row; }
+      }
     }
   }
 }
@@ -1554,6 +1551,31 @@ window.background.csd {
           }
         }
       }
+
+      scrolledwindow.frame {
+        border: none;
+
+        > viewport.frame {
+          > list {
+            @extend %circular_list;
+
+            > row.activatable { @extend %circular_row; }
+          }
+        }
+      }
+
+      > scrolledwindow > viewport > clamp.medium {
+        > box > box > box > frame > box > box.vertical {
+          > separator {
+            background: none;
+            min-height: 2px;
+          }
+          > list { border-radius: 4px; }
+          &:first-child:last-child > list { border-radius: $wm_radius; }
+          &:first-child > list { border-radius: $wm_radius $wm_radius 4px 4px; }
+          &:not(:first-child):last-child > list { border-radius: 4px 4px $wm_radius $wm_radius; }
+        }
+      }
     }
   }
 
@@ -1641,7 +1663,7 @@ window#gnome-system-monitor.background.csd {
 // Gnome-sound-recorder
 //
 
-stack {
+window.background.csd > stack {
   > grid.vertical {
     > scrolledwindow {
       border: none;
@@ -1682,12 +1704,36 @@ window.background.csd {
 //
 
 window.background.csd {
+  > deck > box > leaflet { // >= 40.0
+    > headerbar:first-child {
+      @extend %side_headerbar_left;
+
+      &.selection-mode { color: $header_fg; }
+    }
+
+    > headerbar:last-child {
+      @extend %side_headerbar_right;
+
+      &.selection-mode {
+        color: $header_fg;
+        border-color: $header_border;
+
+        > button:not(.flat):not(.suggested-action):not(.destructive-action):not(.titlebutton) { @extend %headerbar_buttons; }
+      }
+    }
+  }
+
+  > deck > box > overlay > leaflet > overlay > widget > stack {
+    background-color: $base_color;
+  }
+
   > headerbar.titlebar.selection-mode {
     > hdyleaflet > headerbar,
     > leaflet > headerbar {
       color: $header_fg;
+      border-color: $header_border;
 
-      > button { @extend %headerbar_buttons; }
+      > button:not(.flat):not(.suggested-action):not(.destructive-action):not(.titlebutton) { @extend %headerbar_buttons; }
     }
   }
 
@@ -1706,12 +1752,11 @@ window.background.csd {
   }
 
   > overlay > hdyleaflet,
-  > overlay > leaflet {
-    > stack > frame > grid.vertical {
+  > overlay > leaflet,
+  > deck > box > overlay > leaflet { // >= 40.0
+    > stack {
       background-color: rgba($dark_sidebar_bg, 1);
       border-bottom-left-radius: $wm_radius;
-
-      // list.contacts-contact-list {}
     }
 
     > separator.sidebar {
@@ -1833,7 +1878,6 @@ popover.background:not(.emoji-picker) > box.vertical > scrolledwindow {
 
 // popover for bookmarks
 popover.background:not(.emoji-picker) > box.vertical > stack > box.vertical {
-
   scrolledwindow > viewport.frame {
     border: 1px solid $borders_color;
 
@@ -1989,11 +2033,6 @@ window.background.csd {
 // Gnome Clocks
 //
 window.background.csd.unified {
-  border-top-left-radius: $wm_radius;
-  border-top-right-radius: $wm_radius;
-  border-bottom-left-radius: $wm_radius;
-  border-bottom-right-radius: $wm_radius;
-
   > deck > deck > deck {
     > box.vertical > headerbar.titlebar.windowhandle {
       > viewswitchertitle > squeezer {
@@ -2008,11 +2047,6 @@ window.background.csd.unified {
   }
 
   &.maximized, &.tiled, &.fullscreen {
-    border-top-left-radius: $maximized_radius;
-    border-top-right-radius: $maximized_radius;
-    border-bottom-left-radius: $maximized_radius;
-    border-bottom-right-radius: $maximized_radius;
-
     > deck > box.vertical > headerbar.titlebar.windowhandle {
       border-top-left-radius: $maximized_radius;
       border-top-right-radius: $maximized_radius;
@@ -2658,7 +2692,20 @@ window#GearyMainWindow.background.csd { // <= 3.32
 
 // >= 40.0
 .geary-main-window {
-  &.background.csd.unified { background: none; }
+  &.background.csd.unified {
+    background: none;
+
+    .geary-main-layout { // >= 40.0 reset
+      > leaflet > leaflet > headerbar { // left and center headerbar
+        &:first-child { box-shadow: none; }
+        &:last-child { box-shadow: none; }
+      }
+
+      > leaflet > headerbar { // right headerbar
+        box-shadow: none;
+      }
+    }
+  }
 
   .geary-main-layout { // >= 40.0
     background-color: $dark_sidebar_bg;
@@ -2706,19 +2753,24 @@ window#GearyMainWindow.background.csd { // <= 3.32
 
     scrolledwindow {
       // margin: -1px 0;
-      padding: 0 6px;
+      padding: 0 4px;
       background-color: $base_color;
 
       treeview.view {
         background-image: none;
-        border-color: $base_color;
+        border: 2px solid transparent;
         border-radius: $mn_radius;
         outline: none;
+        padding: 6px 0;
+        margin: 0 4px;
 
-        &:hover { background-color: rgba($fg_color, 0.1); }
+        &:hover {
+          background-color: rgba($fg_color, 0.1);
+          border-color: transparent;
+        }
 
         &:selected, &:active {
-          border-color: $base_color;
+          border-color: transparent;
           border-radius: $mn_radius;
           background-color: rgba($fg_color, 0.15);
           color: if($variant == 'light', $fg_color, $selected_fg_color);
@@ -2761,7 +2813,21 @@ window#GearyMainWindow.background.csd { // <= 3.32
   geary-conversation-viewer#conversation_viewer { // right side
     background-color: $base_color;
 
-    list.background.conversation-listbox.content { background-color: $base_color; }
+    list.background.conversation-listbox.content {
+      background-color: $base_color;
+
+      > row.activatable {
+        border: 1px solid $borders_color;
+        border-bottom-width: 0;
+
+        &:first-child {
+          border-top-left-radius: $wm_radius;
+          border-top-right-radius: $wm_radius;
+        }
+
+        &:last-child { border-bottom-width: 1px; }
+      }
+    }
 
     searchbar {
       > revealer > box {
@@ -2772,6 +2838,58 @@ window#GearyMainWindow.background.csd { // <= 3.32
   }
 }
 
+// Accounts setting dialog
+.geary-accounts-editor-pane-content {
+  frame:not(.geary-signature) {
+    > border { border: none; }
+
+    > list {
+      @extend %circular_list;
+
+      > row.activatable {
+        @extend %circular_row;
+
+        > grid > entry { background-color: $divider_color; }
+      }
+    }
+  }
+}
+
+
+//
+// Gnome-Box
+//
+
+window.background.csd {
+  > overlay > stack.content-bg {
+    background-color: transparent;
+    border-radius: 0 0 $wm_radius $wm_radius;
+
+    > notebook.frame {
+      border: none;
+
+      > stack {
+        border-radius: 0 0 $wm_radius $wm_radius;
+
+        > box.transparent-bg > scrolledwindow > viewport.frame > grid > stack > box {
+          > frame {
+             > border {
+              border: 1px solid $borders_color;
+              border-bottom: none;
+              border-radius: $bt_radius $bt_radius 0 0;
+            }
+
+            > stack > list {
+              border-radius: $bt_radius $bt_radius 0 0;
+            }
+          }
+
+          > toolbar.inline-toolbar { border-top: 1px solid $borders_color; }
+        }
+      }
+    }
+  }
+}
 
 //
 // Dialogs
@@ -2949,6 +3067,49 @@ window.background.csd {
     > stack > box > box > list,
     > stack > box > stack > scrolledwindow > viewport > list { // ArcMenu setting sidebar
       border-bottom-left-radius: $maximized_radius;
+    }
+  }
+}
+
+//
+// Unified window (> = Gnome 40)
+//
+
+window.background.csd.unified {
+  headerbar {
+    box-shadow: none;
+
+    &.selection-mode {
+      box-shadow: none;
+    }
+  }
+
+  // ...and add it on the window itself
+  > decoration-overlay {
+    box-shadow: inset 0 0 0 1px $highlight_color;
+  }
+
+  &,
+  > decoration,
+  > decoration-overlay {
+    border-radius: $wm_radius;
+  }
+
+  &.tiled,
+  &.tiled-top,
+  &.tiled-right,
+  &.tiled-bottom,
+  &.tiled-left,
+  &.maximized,
+  &.fullscreen {
+    > decoration-overlay {
+      box-shadow: none;
+    }
+
+    &,
+    > decoration,
+    > decoration-overlay {
+      border-radius: $maximized_radius;
     }
   }
 }

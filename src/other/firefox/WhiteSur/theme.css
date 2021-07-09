@@ -20,5 +20,5 @@
 /* Set theme version text in customization panel */
 #customization-footer::before {
 	content: "Firefox WhiteSur theme";
-	padding: 9px;
+	padding: 10px;
 }

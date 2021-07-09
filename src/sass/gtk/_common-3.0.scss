@@ -457,54 +457,6 @@ spinner {
 }
 
 //
-// General Typography
-//
-.large-title {
-  font-weight: 300;
-  font-size: 24pt;
-}
-
-.title-1 {
-  font-weight: 800;
-  font-size: 20pt;
-}
-
-.title-2 {
-  font-weight: 800;
-  font-size: 15pt;
-}
-
-.title-3 {
-  font-weight: 700;
-  font-size: 15pt;
-}
-
-.title-4 {
-   font-weight: 700;
-   font-size: 13pt;
-}
-
-.heading {
-  font-weight: 700;
-  font-size: 11pt;
-}
-
-.body {
-  font-weight: 400;
-  font-size: 11pt;
-}
-
-.caption-heading {
-  font-weight: 700;
-  font-size: 9pt;
-}
-
-.caption {
-  font-weight: 400;
-  font-size: 9pt;
-}
-
-//
 // Text Entries
 //
 %Linked_entrys {
@@ -565,7 +517,7 @@ entry {
   @each $e_type, $e_color, $e_fg_color in (warning, $warning_color, $light_fg_color),
                                           (error, $error_color, $light_fg_color),
                                           (search-missing, $error_color, $light_fg_color) { // entry.search-missing for Gnome-Builder
-    &.#{$e_type} {
+    &.#{$e_type}, &.#{$e_type}.search {
       color: $e_fg_color;
       background-color: mix($e_color, $base_color, 60%);
       border-image: none;
@@ -724,6 +676,14 @@ $_dot_color: $selected_bg_color;
   &:disabled { @include button(flat-insensitive); }
 }
 
+%circular_button {
+  border-radius: $circular_radius;
+  -gtk-outline-radius: $circular_radius;
+  padding: 0 0;
+  min-height: $menuitem_size;
+  min-width: $menuitem_size;
+}
+
 button {
   min-height: $menuitem_size - 4px;
   min-width: $menuitem_size - 10px;
@@ -745,7 +705,7 @@ button {
       transition-duration: 350ms;
 
       &:active { transition: $button_transition; }
-     }
+    }
 
     &:checked:hover { background-image: none; }
 
@@ -760,7 +720,6 @@ button {
   }
 
   &:active, &:checked {
-    background-color: if($variant=='light', darken($button_bg, 8%), lighten($button_bg, 8%));
     background-clip: if($variant=='light', border-box, padding-box);
     transition-duration: 200ms;
 
@@ -771,7 +730,7 @@ button {
     @include button(insensitive);
   }
 
-  .background &:not(.flat) {
+  .background & {
     &:active, &:checked {
       @include button(active);
     }
@@ -783,7 +742,7 @@ button {
     }
   }
 
-  &.image-button, &.popup {
+  &.image-button:not(.circular), &.popup:not(.circular) {
     min-height: $menuitem_size - 4px;
     padding-left: $container_padding;
     padding-right: $container_padding;
@@ -820,12 +779,8 @@ button {
     &.popup { padding-right: $container_padding; padding-left: $container_padding; }
   }
 
-  @at-root %circular_button, &.close { // The Bloody Circul Button
-    border-radius: $circular_radius;
-    -gtk-outline-radius: $circular_radius;
-    padding: 0 0;
-    min-height: $menuitem_size;
-    min-width: $menuitem_size;
+  &.close, &.circular { // The Bloody Circul Button
+    @extend %circular_button;
 
     &:active, &:checked {
       @if $variant=='light' {
@@ -847,14 +802,15 @@ button {
     background-color: $osd_bg_color;
     border-color: darken($osd_bg_color, 8%);
 
-    &.image-button {
+    &.image-button, &.round-button {
       padding: 0;
       min-height: 42px;
       min-width: 42px;
+      border-radius: $circular_radius;
     }
 
     &:hover {
-      color: $selected_bg_color;
+      color: $osd_fg_color;
       box-shadow: none;
       background-color: $osd_button_bg;
     }
@@ -1149,7 +1105,7 @@ spinbutton {
 
   entry {
     @extend %Linked_entrys;
-    border: 1px solid $borders_color;
+    border: 1px solid $dark_borders_color;
 
     &:focus {
       border-color: $entry_highlight;
@@ -1514,7 +1470,7 @@ actionbar {
   }
 }
 
-.background headerbar {
+headerbar {
   min-height: $headerbar_size;
   padding: 0 $container_padding + 10px;
   color: $header_fg;
@@ -1542,6 +1498,7 @@ actionbar {
   }
 
   entry {
+    min-height: 20px;
     @include entry(header-normal);
 
     &:backdrop { opacity: 0.65; background-image: none; }
@@ -1589,7 +1546,7 @@ actionbar {
     }
   }
 
-  button {
+  button:not(.combo) {
     @include button(header-normal);
 
     &:backdrop { opacity: 0.65; background-image: none; }
@@ -1603,7 +1560,7 @@ actionbar {
     }
   }
 
-  button:not(.flat):not(.suggested-action):not(.destructive-action):not(.titlebutton) {
+  button:not(.flat):not(.combo):not(.suggested-action):not(.destructive-action):not(.titlebutton) {
     &:hover {
       @include button(header-hover);
       transition: $button_transition;
@@ -1645,7 +1602,6 @@ actionbar {
   }
 
   stackswitcher.linked.stack-switcher:not(.vertical) > button {
-    // min-height: 26px;
     min-width: $menuitem_size - 4px;
     border-radius: $bt_radius;
   }
@@ -1678,7 +1634,6 @@ actionbar {
     padding: 0;
 
     button {
-      // min-height: 26px;
       margin: 0;
       font-weight: 500;
 
@@ -1703,8 +1658,8 @@ actionbar {
 
   // Headerbar Switches
   switch {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: $container_padding;
+    margin-bottom: $container_padding;
 
     &:backdrop { opacity: 0.75; }
   }
@@ -1720,6 +1675,11 @@ actionbar {
       margin-top: 0;
       margin-bottom: 0;
       min-height: 0;
+      min-width: 120px;
+      padding: 0 0;
+
+      label { padding-right: $container_padding; }
+      image { padding-left: $container_padding; }
     }
 
     > box > separator.titlebutton { @extend %header_separator; }
@@ -1756,7 +1716,7 @@ actionbar {
     }
 
     button:not(.flat):not(.suggested-action):not(.destructive-action):not(.titlebutton) {
-      // @include button(undecorated);
+      @include button(undecorated);
       @extend %selected-button;
     }
 
@@ -1786,6 +1746,7 @@ actionbar {
     background-color: $header_bg;
     border-color: opacify($header_border, 1);
     box-shadow: none;
+    padding: 0 $container_padding + 10px;
 
     &:backdrop {
       background-color: $header_bg_backdrop;
@@ -1895,14 +1856,12 @@ actionbar {
   }
 
   &, & headerbar {
-    box-shadow: inset 0 1px $highlight_color;
-
     .tiled &,
     .maximized &,
     .fullscreen & {
       box-shadow: none;
 
-      &, &.background {
+      &, &.background, &:backdrop {
         border-top-left-radius: $maximized_radius;
         border-top-right-radius: $maximized_radius;
       }
@@ -1915,17 +1874,18 @@ actionbar {
   }
 }
 
+.background:not(.unified) {
+  .titlebar {
+    &, & headerbar { box-shadow: inset 0 1px $highlight_color; }
+  }
+
+  stack.titlebar { box-shadow: none; }
+}
+
 window.background.csd.unified {
   > deck > box.vertical > stack > headerbar.titlebar.windowhandle {
     > box > separator { background: none; }
     > button:disabled { @include button(header-insensitive); }
-  }
-
-  &.maximized {
-    > deck > box > headerbar.windowhandle {
-      border-top-left-radius: $maximized_radius;
-      border-top-right-radius: $maximized_radius;
-    }
   }
 }
 
@@ -1963,20 +1923,6 @@ window.background > box.vertical > headerbar:not(.titlebar) { // reset headerbar
   > separator {
     min-width: 1px;
     @extend %side_separator;
-  }
-}
-
-headerbar, .titlebar {
-  button {
-    min-height: 26px;
-    min-width: 22px;
-  }
-
-  entry { // Reset entrys
-    min-height: 22px;
-    margin-left: 0;
-    margin-right: 0;
-    padding: 2px $container_padding * 2;
   }
 }
 
@@ -2174,6 +2120,15 @@ headerbar, .titlebar {
       background-color: $selected_bg_color;
       border-radius: 0;
       border-style: none;
+    }
+  }
+
+  entry, &:selected entry {
+    background-color: $base_color;
+
+    &:focus {
+      color: $fg_color;
+      background-color: mix(white, $base_color, 8%);
     }
   }
 }
@@ -2592,7 +2547,7 @@ notebook {
       @extend %tabs_tab;
 
       // close button
-      button.flat {
+      button.flat, button.close-button {
         min-height: $small_size;
         min-width: $small_size;
         border-radius: 3px;
@@ -3195,8 +3150,8 @@ progressbar {
   }
   // Moving bit
   progress {
-    min-height: $container_padding - 2px;
-    min-width: $container_padding - 2px;
+    // min-height: $container_padding - 2px;
+    // min-width: $container_padding - 2px;
     background-color: $progress_color;
     border: none;
     border-radius: $bt_radius;
@@ -3428,7 +3383,7 @@ list {
 row {
   &:not(:hover) { transition: all 300ms $ease-out-quad; }
 
-  button.circular { @extend %circular_button; }
+  // button.circular { @extend %circular_button; }
 
   &:selected {
     color: $fg_color;
@@ -3891,7 +3846,7 @@ paned {
 // GtkInfoBar
 //
 
-infobar {
+.background infobar {
   border: none;
 
   &.info {
@@ -3936,9 +3891,16 @@ infobar {
       color: $selected_fg_color;
       caret-color: currentColor;
 
-      button:not(.flat) {
-        min-height: 28px;
+      button, button.flat.close, button.circular {
         @extend %selected-button;
+      }
+
+      button.flat.close {
+        @extend %circular_button;
+      }
+
+      button.circular {
+        min-width: 20px;
       }
 
       selection {
@@ -4104,11 +4066,6 @@ colorchooser .popover.osd { border-radius: $bt_radius; }
 // Shortcuts Help
 //
 
-button.circular {
-  @extend %circular_button;
-  // label { padding: 0; }
-}
-
 .keycap {
   min-width: $small_size - 4px;
   min-height: $small_size;
@@ -4124,9 +4081,7 @@ button.circular {
 
 stackswitcher {
   button.text-button { min-width: 80px; }
-  button.circular {
-    @extend %circular_button;
-  }
+  // button.circular { @extend %circular_button; }
 }
 
 //
@@ -4214,7 +4169,7 @@ decoration {
 //
 // Titlebuttons
 //
-.background headerbar {
+headerbar {
   button.titlebutton {
     &.close, &.maximize, &.minimize {
       min-width: 16px;
@@ -4233,7 +4188,7 @@ decoration {
       &:backdrop { opacity: 1; }
     }
 
-    // Load png assets for each button, Fix the Chrome window restore button bug
+    // Load png assets for each button
     @each $k in ('close', 'maximize', 'minimize') {
       @each $l, $m in ('',''), (':backdrop','-backdrop'), (':backdrop:hover','-backdrop-hover'), (':hover','-hover'), (':active','-active') {
         &.#{$k}#{$l} {
