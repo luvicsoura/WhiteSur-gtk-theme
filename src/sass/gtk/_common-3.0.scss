@@ -1850,6 +1850,9 @@ headerbar {
 }
 
 .titlebar {
+  padding-left: $titlebar_horizontal_spacing;
+  padding-right: $titlebar_horizontal_spacing;
+
   &, &.background {
     border-top-left-radius: $wm_radius;
     border-top-right-radius: $wm_radius;
